@@ -1,24 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useReducer } from "react";
+import "./App.css";
+import { initialState, reducer } from "./reducers";
+import TodoForm from "./myTodoForm";
+import TodoList from "./TodoList";
 
 function App() {
+  const [newTodo, setNewTodo] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  console.log(state);
+
+  
+
+  const handleChanges = (e) => {
+    setNewTodo(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch({ type: "ADD_TODO", payload: newTodo });
+    setNewTodo("");
+  };
+
+
+const click = (todoId) => {
+  dispatch({ type: "TOGGLE_TODO", payload: todoId });
+    };
+
+    const clear = (e) => {
+      e.preventDefault()
+      dispatch({type: "CLEAR_COMPLETED"})
+    }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Add Something on the List!</h2>
+
+      <TodoList 
+        // onClick = { () =>click}
+        todoList={state}
+        toggleItem = {click}
+      />
+
+      <TodoForm 
+        handleSubmit={handleSubmit}
+        clear={clear}
+        handleChanges={handleChanges}
+      newTodo = {newTodo}
+      
+    
+      />
+
     </div>
   );
 }
